@@ -42,7 +42,7 @@
 - Part 2: Gather and Plot More Data (Optional with no extra points earning)
 - Part 1: Create the Earthquake Visualization
 
-
+![Alt text](/Users/lynn/Documents/leaflet-challenge/static/Images/2-BasicMap.png "Map")
 
 
 ### Your first task is to visualize an earthquake dataset. Complete the following steps:
