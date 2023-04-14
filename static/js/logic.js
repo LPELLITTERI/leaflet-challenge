@@ -1,4 +1,4 @@
-const url = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson';
+const url = 'https://earthquacommit ke.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson';
 
 const myMap = L.map('map').setView([30, 33], 4);
 
@@ -7,6 +7,17 @@ const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
 }).addTo(myMap);
+
+
+// Define a function to determine the color of the circle based on the depth
+function getColor(d) {
+    return d >= 100 ? "#f03b20" :
+           d >= 70 ? "#feb24c" :
+           d >= 50 ? "#fed976" :
+           d >= 30 ? "#ffeda0" :
+           d >= 10 ? "#c7e9c0":
+                     "#a1d99b";
+  }
 
 // Add legend to map
 const legend = L.control({ position: 'bottomright' });
@@ -32,6 +43,12 @@ legend.onAdd = function (map) {
 legend.addTo(myMap);
 
 // Add earthquake and tectonic plates layers to map
+const topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+  maxZoom: 17,
+  attribution: 'Map data © <a href="https://opentopomap.org">OpenTopoMap</a> contributors, ' +
+    '<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>'
+});
+
 const earthquakeLayer = L.layerGroup().addTo(myMap);
 const tectonicPlatesLayer = L.layerGroup().addTo(myMap);
 
@@ -63,6 +80,20 @@ $.getJSON(url, function (data) {
     }).addTo(earthquakeLayer);
 });
 
+const baseMaps = {
+    'OpenStreetMap': osm,
+    'OpenTopoMap': topo
+  };
+  
+  const overlayMaps = {
+    'Earthquakes': earthquakeLayer,
+    'Tectonic Plates': tectonicPlatesLayer
+  };
+
+
+
+
+
 // Add tectonic plates to tectonic plates layer group
 $.getJSON('https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json', function (data) {
     L.geoJSON(data, {
@@ -76,3 +107,9 @@ $.getJSON('https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSO
     }).addTo(tectonicPlatesLayer);
 });
 
+
+  
+  L.control.layers(baseMaps, overlayMaps).addTo(myMap);
+  
+  tectonicPlates.addTo(myMap);
+  osm.addTo(myMap);
